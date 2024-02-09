@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from 'react'
 import logo from './assets/logo.png'
-import { NewNoteCard } from './components/new-note-card'
 import { NoteCard } from './components/note-card'
+import { NewNote } from './components/new-note'
 
 interface Note{
   id: string
@@ -60,16 +60,16 @@ export function App() {
       <img className='w-40 h-15' src={logo} alt='Voice Note'/>
 
       <form className='w-full'>
-        <input type='text' placeholder='Busque em suas notas...' className='w-full bg-transparent text-3xl font-semibold tracking-tight outline-none placeholder:text-slate-500' onChange={handleSearch}/>
+        <input type='text' placeholder='Busque em suas notas...' className='w-full bg-transparent text-[24px] leading-8 font-semibold tracking-tight outline-none placeholder:text-slate-500' onChange={handleSearch}/>
       </form>
 
       <div className='h-px bg-slate-700'/>
 
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[250px]'>
-        <NewNoteCard onNoteCreated={onNoteCreated}/>
         {filteredNotes.map(note =>{
           return <NoteCard key={note.id} note={note} onNoteDeleted={onNoteDeleted}/>
         })}
+        <NewNote onNoteCreated={onNoteCreated}/>
       </div>
     </div>
     
