@@ -5,25 +5,26 @@ import { NewNote } from './components/new-note'
 
 interface Note{
   id: string
+  title: string
   date: Date
   content: string
 }
 
 export function App() {
   const [search, setSearch] = useState('')
+  const notesOnStorage = localStorage.getItem('notes')
   const [notes, setNotes] = useState<Note[]>(() => {
-    const notesOnStorage = localStorage.getItem('notes')
 
     if(notesOnStorage){
       return JSON.parse(notesOnStorage)
     }
-
     return []
   })
 
-  function onNoteCreated (content: string){
+  function onNoteCreated (title:string, content: string){
     const newNote = {
       id: crypto.randomUUID(),
+      title,
       date: new Date(),
       content,
     }
@@ -39,7 +40,6 @@ export function App() {
     const notesArray = notes.filter(note => {
       return note.id != id
     })
-
     setNotes(notesArray)
 
     localStorage.setItem('notes', JSON.stringify(notesArray))
@@ -52,7 +52,7 @@ export function App() {
   }
 
   const filteredNotes = search != ''
-    ? notes.filter(note => note.content.toLowerCase().includes(search.toLowerCase()))
+    ? notes.filter(note => note.content.toLowerCase().includes(search.toLowerCase())) || notes.filter(note => note.title.toLowerCase().includes(search.toLowerCase()))
     : notes
 
   return (
@@ -60,19 +60,23 @@ export function App() {
       <img className='w-40 h-15' src={logo} alt='Voice Note'/>
 
       <form className='w-full'>
-        <input type='text' placeholder='Busque em suas notas...' className='w-full bg-transparent text-[24px] leading-8 font-semibold tracking-tight outline-none placeholder:text-slate-500' onChange={handleSearch}/>
+        <input type='text' placeholder='Busque em suas notas...' className='w-full bg-transparent text-[22px] leading-8 font-semibold tracking-tight outline-none placeholder:text-slate-400' onChange={handleSearch}/>
       </form>
 
       <div className='h-px bg-slate-700'/>
 
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[250px]'>
-        {filteredNotes.map(note =>{
-          return <NoteCard key={note.id} note={note} onNoteDeleted={onNoteDeleted}/>
-        })}
+
+        {notesOnStorage === '[]' || !notesOnStorage ? ( 
+          <span className='text-slate-600'>Não possui nenhuma nota!</span>
+        ) : (
+          filteredNotes.map(note =>{
+            return <NoteCard key={note.id} note={note} onNoteDeleted={onNoteDeleted}/>
+          })
+        )}
         <NewNote onNoteCreated={onNoteCreated}/>
       </div>
     </div>
-    
   )
 }
 
