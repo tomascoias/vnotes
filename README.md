@@ -1,5 +1,6 @@
 <h1>Vnotes</h1>
-![303728315-010be14d-4251-4fb3-8f7c-6aa1652323f3](https://github.com/tomascoias/vnotes/assets/159427101/6c578bd7-bfe4-4db1-bece-5b837e134f5d)
+
+![alt text](https://github.com/tomascoias/vnotes/assets/159427101/6c578bd7-bfe4-4db1-bece-5b837e134f5d)
 
 Application to convert audio to text with React, u can write your notes with the text too.
 
