@@ -52,9 +52,10 @@ export function App() {
   }
 
   const filteredNotes = search != ''
-    ? notes.filter(note => note.content.toLowerCase().includes(search.toLowerCase())) || notes.filter(note => note.title.toLowerCase().includes(search.toLowerCase()))
-    : notes
-
+    ? ( 
+    notes.filter(note => note.content.toLowerCase().includes(search.toLowerCase())), 
+    notes.filter(note => note.title.toLowerCase().includes(search.toLowerCase()))
+    ) : notes
   return (
     <div className='mx-auto max-w-6xl my-12 space-y-4 px-5'>
       <img className='w-40 h-15' src={logo} alt='Voice Note'/>
@@ -70,9 +71,13 @@ export function App() {
         {notesOnStorage === '[]' || !notesOnStorage ? ( 
           <span className='text-slate-600'>Não possui nenhuma nota!</span>
         ) : (
-          filteredNotes.map(note =>{
-            return <NoteCard key={note.id} note={note} onNoteDeleted={onNoteDeleted}/>
-          })
+          filteredNotes.length === 0 ? (
+            <span className='text-slate-600'>Nenhum resultado encontrado!</span>
+          ) : (
+            filteredNotes.map(note =>{
+              return <NoteCard key={note.id} note={note} onNoteDeleted={onNoteDeleted}/>
+            })
+          )
         )}
         <NewNote onNoteCreated={onNoteCreated}/>
       </div>
