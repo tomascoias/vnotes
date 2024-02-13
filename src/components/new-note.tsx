@@ -54,7 +54,7 @@ export function NewNote({onNoteCreated}: NewNoteProps) {
     speechRecognition = new SpeechRecognitionAPI()
 
     speechRecognition.lang = 'pt'
-    speechRecognition.continuous = true //continue talking when I stopped talking
+    speechRecognition.continuous = true //continue recording when I stopped talking
     speechRecognition.maxAlternatives = 1
     speechRecognition.interimResults = true //show the sentences while Im talking
 
@@ -63,7 +63,7 @@ export function NewNote({onNoteCreated}: NewNoteProps) {
         return text.concat(result[0].transcript)
       }, '')
 
-      setContent(transcription)
+      setContent(content+' '+transcription)
     }
 
     speechRecognition.onerror = (event) => {
@@ -100,11 +100,10 @@ export function NewNote({onNoteCreated}: NewNoteProps) {
                   <button type='button' className='text-red-600 bg-slate-800 p-2 rounded-full' onClick={handleStopRecording}><Mic className='size-4'/></button>
                 ) : (
                   <button type="button" className='bg-slate-800 p-2 rounded-full' onClick={handleStartRecording}><Mic className='size-4'/></button>
-                  
                 )}
               </div>
               {isRecording ? (
-                <textarea autoFocus className='text-sm leading-6 text-slate-400 bg-transparent resize-none flex-1 outline-none' onChange={handleContentChange} value={content}/>
+                <textarea disabled autoFocus className='text-sm leading-6 text-slate-400 bg-transparent resize-none flex-1 outline-none' onChange={handleContentChange} value={content}/>
               ) : (
                 <textarea placeholder='Escreva a sua nota aqui' autoFocus className='text-sm leading-6 text-slate-400 bg-transparent resize-none flex-1 outline-none' onChange={handleContentChange} value={content}/>
               )}

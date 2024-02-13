@@ -1,7 +1,7 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import { formatDistanceToNow } from 'date-fns'
 import { pt } from 'date-fns/locale'
-import { ArrowLeft, Trash2 } from 'lucide-react'
+import { ArrowLeft, Mic, Trash2 } from 'lucide-react'
 import { ChangeEvent, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -16,7 +16,10 @@ interface NoteCardProps {
   onNoteEdit: (id: string, title:string, content: string) => void
 }
 
+let speechRecognition: SpeechRecognition | null = null
+
 export function NoteCard({ note, onNoteDeleted, onNoteEdit}: NoteCardProps) {
+  const [isRecording, SetIsRecording] = useState(false)
   const [titleEdit, setTitleEdit] = useState(note.title)
   const [contentEdit, setContentEdit] = useState(note.content)
 
@@ -33,6 +36,49 @@ export function NoteCard({ note, onNoteDeleted, onNoteEdit}: NoteCardProps) {
   function handleEditNote (id: string){
     onNoteEdit(id,titleEdit,contentEdit)
     toast.success('Nota Editada com sucesso!')
+  }
+
+  function handleStartRecording () {
+    const isSpeechRecognitionAPIAvailable = 'SpeechRecognition' in window
+      || 'webkitSpeechRecognition' in window
+
+    if(!isSpeechRecognitionAPIAvailable){
+      toast.error('Infelizmente seu navegador nao suporta a API de Gravação')
+      return
+    }
+
+    SetIsRecording(true)
+
+    const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition
+
+    speechRecognition = new SpeechRecognitionAPI()
+
+    speechRecognition.lang = 'pt'
+    speechRecognition.continuous = true //continue recording when I stopped talking
+    speechRecognition.maxAlternatives = 1
+    speechRecognition.interimResults = true //show the sentences while Im talking
+
+    speechRecognition.onresult = (event) => {
+      const transcription = Array.from(event.results).reduce((text, result) => {
+        return text.concat(result[0].transcript)
+      }, '')
+
+      setContentEdit(contentEdit+' '+transcription)
+    }
+
+    speechRecognition.onerror = (event) => {
+      console.error(event)
+    }
+
+    speechRecognition.start()
+  }
+
+  function handleStopRecording (){
+    SetIsRecording(false)
+
+    if(speechRecognition !== null){
+      speechRecognition.stop()
+    }
   }
 
   return (
@@ -68,12 +114,24 @@ export function NoteCard({ note, onNoteDeleted, onNoteEdit}: NoteCardProps) {
             <div className='flex flex-1 flex-col gap-3 px-5'>
               <div className='flex justify-between items-center gap-3'>
                 <input type='text' placeholder='Titulo:' className='w-full bg-transparent text-lg font-semibold outline-none' onChange={handleTitleEdit} value={titleEdit} />
+                {isRecording ? (
+                  <button type='button' className='text-red-600 bg-slate-800 p-2 rounded-full' onClick={handleStopRecording}><Mic className='size-4'/></button>
+                ) : (
+                  <button type="button" className='bg-slate-800 p-2 rounded-full' onClick={handleStartRecording}><Mic className='size-4'/></button>
+                )}
               </div>
               <textarea autoFocus className='text-sm leading-6 text-slate-400 bg-transparent resize-none flex-1 outline-none' onChange={handleContentEdit} value={contentEdit} />
             </div>
-            <button type='button' className='w-full bg-lime-400 py-3 text-center text-sm text-lime-950 outline-none font-medium hover:bg-lime-500' onClick={() => handleEditNote(note.id)}>
+            {isRecording ? (
+              <button disabled type='button' className='w-full bg-lime-200 py-4 text-center text-sm text-gray-300 outline-none font-medium cursor-not-allowed'>
+                Editar nota
+              </button>
+            ) : (
+              <button type='button' className='w-full bg-lime-400 py-3 text-center text-sm text-lime-950 outline-none font-medium hover:bg-lime-500' onClick={() => handleEditNote(note.id)}>
               Editar nota
             </button>
+            )}
+            
           </form>
         </Dialog.Content>
       </Dialog.Portal>
