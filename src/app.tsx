@@ -36,6 +36,21 @@ export function App() {
     localStorage.setItem('notes', JSON.stringify(notesArray))
   }
 
+  function onNoteEdit (idEdit: string, title:string, content: string){
+    const notesArray = notes.filter(note => {
+      if(note.id == idEdit){
+        note.title = title
+        note.content = content
+        note.date= new Date
+      }
+      return notes
+    })
+
+    setNotes(notesArray)
+
+    localStorage.setItem('notes', JSON.stringify(notesArray))
+  }
+
   function onNoteDeleted (id: string){
     const notesArray = notes.filter(note => {
       return note.id != id
@@ -75,7 +90,7 @@ export function App() {
             <span className='text-slate-600'>Nenhum resultado encontrado!</span>
           ) : (
             filteredNotes.map(note =>{
-              return <NoteCard key={note.id} note={note} onNoteDeleted={onNoteDeleted}/>
+              return <NoteCard key={note.id} note={note} onNoteDeleted={onNoteDeleted} onNoteEdit={onNoteEdit}/>
             })
           )
         )}

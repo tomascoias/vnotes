@@ -1,13 +1,9 @@
 import * as Dialog from '@radix-ui/react-dialog'
 import { formatDistanceToNow } from 'date-fns'
 import { pt } from 'date-fns/locale'
-<<<<<<< HEAD
 import { ArrowLeft, Mic, Trash2 } from 'lucide-react'
 import { ChangeEvent, useState } from 'react'
 import { toast } from 'sonner'
-=======
-import { ArrowLeft , Trash2 } from 'lucide-react'
->>>>>>> parent of c5d3df8 (add: edit note)
 
 interface NoteCardProps{
   note:{
@@ -17,9 +13,9 @@ interface NoteCardProps{
     content: string
   }
   onNoteDeleted: (id: string) => void
+  onNoteEdit: (id: string, title:string, content: string) => void
 }
 
-<<<<<<< HEAD
 let speechRecognition: SpeechRecognition | null = null
 
 export function NoteCard({ note, onNoteDeleted, onNoteEdit}: NoteCardProps) {
@@ -84,10 +80,6 @@ export function NoteCard({ note, onNoteDeleted, onNoteEdit}: NoteCardProps) {
       speechRecognition.stop()
     }
   }
-
-=======
-export function NoteCard({note, onNoteDeleted}: NoteCardProps) {
->>>>>>> parent of c5d3df8 (add: edit note)
   return (
     <Dialog.Root>
       <Dialog.Trigger className='rounded-md text-left flex flex-col bg-slate-800 p-5 gap-3 overflow-hidden relative hover:ring-2 hover:ring-slate-600 outline-none focus-visible:ring-2 focus-visible:ring-lime-400'>
@@ -97,7 +89,7 @@ export function NoteCard({note, onNoteDeleted}: NoteCardProps) {
               {formatDistanceToNow(note.date, {locale: pt, addSuffix:true})} 
             </span>
         </div>
-        <p className='text-sm leading-6 text-slate-400'>
+        <p className='text-sm leading-6 text-slate-400 text-ellipsis w-full overflow-hidden'>
           {note.content}
         </p>
         <div className='absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-black/60 to-black/0 pointer-events-none' />
@@ -105,8 +97,8 @@ export function NoteCard({note, onNoteDeleted}: NoteCardProps) {
 
       <Dialog.Portal>
         <Dialog.Overlay className='inset-0 fixed bg-black/50'/>
-        <Dialog.Content className='fixed overflow-hidden inset-0 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-[640px] md:w-full md:h-[60vh] bg-slate-700 md:rounded-md flex flex-col outline-none p-5'>
-          <div className='flex justify-between items-center'>
+        <Dialog.Content className='fixed overflow-hidden inset-0 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 md:max-w-[640px] md:w-full md:h-[60vh] bg-slate-700 md:rounded-md flex flex-col outline-none'>
+          <div className='flex justify-between items-center p-5'>
             <div className='flex gap-3 items-center'>
               <Dialog.Close>
                 <span className='text-slate-50 hover:text-slate-400'><ArrowLeft  className='size-5 '/></span>
@@ -117,7 +109,6 @@ export function NoteCard({note, onNoteDeleted}: NoteCardProps) {
                 {formatDistanceToNow(note.date, {locale: pt, addSuffix:true})} 
             </span>
           </div>
-<<<<<<< HEAD
           <form className='flex-1 flex flex-col'>
             <div className='flex flex-1 flex-col gap-3 px-5'>
               <div className='flex justify-between items-center gap-3'>
@@ -141,15 +132,6 @@ export function NoteCard({note, onNoteDeleted}: NoteCardProps) {
             )}
             
           </form>
-=======
-          <div className='flex flex-1 flex-col gap-3 mt-2'>
-            <span className='text-lg overflow-hidden'>{note.title}</span>
-            <hr></hr>
-            <p className='text-sm leading-6 text-slate-400'>
-              {note.content}
-            </p>
-          </div>
->>>>>>> parent of c5d3df8 (add: edit note)
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
